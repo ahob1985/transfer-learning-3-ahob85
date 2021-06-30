@@ -10,6 +10,7 @@ let textP;
 let featureExtractor;
 let classifier;
 let video;
+let isCustomModelReady; 
 
 function setup() {
   canvasDiv = createDiv();
@@ -19,12 +20,15 @@ function setup() {
   textP = createP("Model loading, please wait...");
   textP.parent(textDiv);
   // new code below
-
+  isCustomModelReady = false;
   video = createCapture(VIDEO, videoReady);
 }
 
 function draw() {
-
+  if(isCustomModelReady) {
+    image(video, 0, 0);
+    classifier.classify(canvas, gotResults);
+  }
 }
 
 function videoReady() {
@@ -37,7 +41,9 @@ function featureExtractorLoaded() {
 }
 
 function modelReady() {
-
+  classifier.load("model/model.json", function() {
+    isCustomModelReady = true;
+  });
 }
 
 function gotResults(error, results) {
